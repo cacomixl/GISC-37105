@@ -27,8 +27,9 @@
  		<script type="text/javascript">
  		
  		var map = L.map('map', {
- 				center: [34.666, 104.9569], 
- 				zoom: 5});
+ 				center: [37.666, 104.9569], 
+ 				zoom: 4,
+				layers: basemaps});
 
  		var imagery =L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
  				attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
@@ -64,7 +65,7 @@
 			};
 		}
 
-		var provinces = new L.geoJson(provinces, {style:style}).addTo(map);
+		var provinces = new L.geoJson(provinces, {style:style});
 		
 		var minValue = 100;
 		var minRadius = 5;
@@ -75,14 +76,11 @@
 		var onEachFeature = function(feature, layer) {
 			if (feature.properties) {
 				var prop = feature.properties;
-				var popup = '<h3>'+prop['Location']+'</h3>'+'<br>Cases Day 1:'+prop['1']+'<br>Cases Day 11: '+prop['11'];
+				var popup = '<h3>'+prop['Location']+'</h3>'+'<br>Cases, Day 1: '+prop['1']+'<br>Cases, Day 16: '+prop['covid'];
 				feature.layer = layer;
 				layer.bindPopup(popup, {maxWidth: "auto"});
 			}
 		};
-		// Customize however you like, but it
-		// should at least show the location and the number of cases on some day (probably the day you’re
-		// using for the circle values).
 
 		var covidData = new L.geoJson(covidData, {
 			onEachFeature:onEachFeature,
@@ -93,21 +91,22 @@
 				weight: 2,
 				fillColor: '#8B0000',
 				fillOpacity: .5,
-				//radius: 10
 				radius: calcCaseRadius(feature.properties.covid)
 			});
 			}
-		}).addTo(map); 
+		}); 
 
 		var basemaps = {
 			"Terrain": terrain,
 			"Satellite": imagery
 		};
 		var overlaymaps = {
-			"Provinces of China ": provinces
+			"Provinces of China ": provinces,
+			"COVID Cases, Day 16": covidData
 		};
 		
 		L.control.layers(basemaps, overlaymaps, {collapsed:false}).addTo(map);
+		
  
  		</script>
  	</body>
