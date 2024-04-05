@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaflet Preview</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+   integrity="sha384-o/2yZuJZWGJ4s/adjxVW71R+EO/LyCwdQfP5UWSgX/w87iiTXuvDZaejd3TsN7mf"
+   crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+   integrity="sha384-okbbMvvx/qfQkmiQKfd5VifbKZ/W8p1qIsWvE1ROPUfHWsDcC8/BnHohF7vPg2T6"
+   crossorigin=""></script>
+  <script src="bus.js"></script> 
+  <script src="parks.js"></script> 
+  <style type="text/css">
+    body {
+       margin: 0;
+       padding: 0;
+    }
+    html, body, #map{
+       width: 100%;
+       height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+	  var map = L.map('map', { attributionControl: false } ).setView([41.79509594878684, -87.5943165865541], 14.0);
+      L.control.attribution( { prefix: false } ).addTo( map );
+      
+	  var tilesource_layer = L.tileLayer('https://github.com/cacomixl/GISC37105/tree/main/Lab3/{z}/{x}/{y}.png', {
+      var tilesource_layer = L.tileLayer('file:///C%3A/Users/coope/OneDrive/Documents/GISC%2037105/Assignment3/Assignment3/{z}/{x}/{y}.png', {
+        minZoom: 13,
+        maxZoom: 15,
+        tms: false,
+        attribution: 'Created by QGIS algorithm: Generate XYZ tiles (Directory)'
+      }).addTo(map);
+	  
+	  var onEachFeature = function(feature, layer) {
+			if (feature.properties) {
+				var prop = feature.properties;
+				var popup = '<h3>'+prop['Name'];
+				feature.layer = layer;
+				layer.bindPopup(popup, {maxWidth: "150"});
+			}
+		};
+		
+	  var parks = new L.geoJson(parks, {
+		style: function(feature) {
+        return {
+            color: '#006400',
+			opacity: 0,
+            fillColor: '#006400',
+            fillOpacity: 0.5
+        };
+		}
+	  }).addTo(map);
+	  
+	  var bus = new L.geoJson(bus, {
+		onEachFeature:onEachFeature,
+		pointToLayer: function (feature, ll) {
+			return L.circleMarker(ll, {
+				  radius: 4,
+				  fillColor: "#00008b",
+				  color: "#fff",
+				  weight: 0.5,
+				  opacity: 1,
+				  fillOpacity: 0.7
+			});
+		}
+	  }).addTo(map);
+	  
+	  
+	
+  </script>
+</body>
+</html>
